@@ -74,3 +74,43 @@ Make Strings Read-Only设为YES。
 如果要用第三方库里面一个属性或者方法。建议自己重写。    
 
 ****************************
+
+将工程 BuildSetting 的 Levels 选项中的 Generate Debug Symbols 这个设置为 NO:   
+当 Generate Debug Symbols 设置为 YES 时，编译产生的 .o 文件会大一些，当然最终生成的可执行文件也大一些。
+当 Generate Debug Symbols 设置为 NO 的时候，在 Xcode 中设置的断点不会中断，同样生成的ipa安装包也会小一些。
+
+****************************
+适当舍弃架构 armv7:   
+因为 armv7 用于支持 4s 和 3gs，4s是2011年11月正式上线，虽然还有小部分人在使用，如果是是追求包体大小的完全可以舍弃了。
+
+****************************
+删除无用的图片音频和视频文件:   
+ipa 包的体积增大很大程度上取决于资源文件的大小。包括 Images.xcassets 中无用的图片， bundle 中的音频、视频、图片 和字体文件等。
+
+****************************
+代码及代码文件的优化:   
+通过 AppCode 打开对应的工程文件 选择 Code -> inspect Code 分析代码，去掉无用的引用及代码。查找内部使用到的第三方库，一方面可以进行删减代码，用不到的类，可以直接删除，还有把第三方库中的图片资源删除掉
+
+****************************
+Optimization Level 等编译项优化:   
+Build Settings->Optimization Level有几个编译优化选项，release版应该选择 Fastest, Smalllest ，这个选项会开启那些不增加代码大小的全部优化，并让可执行文件尽可能小。
+Strip Linked Product / Deployment Postprocessing / Symbols Hidden by Default在release版本应该设为yes，可以去除不必要的调试符号。Symbols Hidden by Default会把所有符号都定义成”private extern”。。
+
+****************************
+如何查看 ipa 包中的大文件?   
+  1. 找到自己打包后的 ipa ，然后右键，打开方式选择归档实用工具，就会解压出来一个名为 Payload 文件夹。
+  2. 在Payload文件夹中找到当前ipa的app文件（基本就是和这个ipa名字一样的文件，app后缀系统默认隐藏），右键显示包内容。
+  3. 进入到文件夹内，按照大小进行排序，你会发现所有的资源。
+
+****************************
+查找 iOS 工程无用图片资源工具:   
+[LSUnusedResources](https://github.com/tinymind/LSUnusedResources)
+  1. 点击 Browse，选择一个文件夹。
+  2. 点击 Search 开始搜索。
+  3. 等待片刻即可看到结果，可直接对搜索结果进行操作。
+
+****************************
+注意:   
+针对减小 ipa 包体积的操作，我们必须考虑相关影响，以确保做出正确的决定。如果不做权衡的话，我们无法知道需要对程序做出什么样的改变。
+
+****************************
