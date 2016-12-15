@@ -39,6 +39,29 @@
   经过简单demo测试后，发现这个工具还是非常好用的，方便快捷，强烈推荐使用。
   
   
+
+
+****************************
+使用8-bit的PNG图片    
+　　比32-bit的图片能减少4倍的压缩率。由于8-bit的图片支持最多256种不同的颜色，所以8-bit的图片一般只应该用于一小部分的颜色图片。例如灰度图片最好使用8-bit。
+针对32-bit的图片尽量使用高压缩的比率    
+　　利用Adobe Photoshop的Save For Web可以减小JPEG和PNG的图片大小。在Xcode中，默认情况下，会自动的使用pngcrush来压缩.png图片。
+****************************
+对应用程序做一个完整性检查    
+　　利用 Inspecting Your App 中介绍的流程，对.app bundle做一个全面的检查，以了解那些是真正需要用到的。在程序中，经常会包含一些额外的文件，例如readme之类的，这些从来都不会被用到。
+
+****************************
+编译选项    
+　　将build setting中的Optimization Level设置为Fastest, Smallest [-Os]; 将build setting 中的Strip Debug Symbols During Copy设置为YES(COPY_PHASE_STRIP = YES)，这样可以减小编译出二进制文件的尺寸。这里提到的这些设置在Xcode工程中对于Release的配置是默认的。
+
+　　警告：这些设置会让你的程序很难debug。在一般开发环境build中不建议这样设置，
+
+****************************
+iOS App Store相关因素    
+　　作为提交到App Store中app里的可执行文件是被加过密的。加密的副作用是可执行文件的压缩效果没有之前的好了，因为加密会隐藏一些细节问题。因此，从App Store下载下来的.ipa文件大小要比从本地build出来的.ipa文件大。    
+　　注意：将长文本内容和表数据等从代码中移除，并添加到外部文件中，这样可以减小最终安装包下载的大小——因为这些文件的压缩效果更好。    
+　　如果你选择Organizer window中的某个archived，然后点击Estimate Size，Xcode可以对最终分发的程序尺寸做出一个评估。这里并不考虑Mac App Store上面的和企业级部署的iOS程序。
+
 ****************************
 减少图片数量：减少图片生成，只采用 @3x。
 
