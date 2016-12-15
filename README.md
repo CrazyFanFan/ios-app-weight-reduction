@@ -172,3 +172,26 @@ Strip Linked Product / Deployment Postprocessing / Symbols Hidden by Default在r
 针对减小 ipa 包体积的操作，我们必须考虑相关影响，以确保做出正确的决定。如果不做权衡的话，我们无法知道需要对程序做出什么样的改变。
 
 ****************************
+删除无用和重复资源
+检查工程里是否有重复和不需要的音频、图片等资源，有的话请及时删除
+****************************
+制作自己的库文件（.a 或者.Framework）时，只需保证真机运行的即可，不需制作出支持模拟器的库文件
+
+****************************
+音频的压缩
+参考WWDC中的Audio Development for Games，里面介绍了如何有效的处理音频。常规来说，我们要使用AAC或MP3来压缩音频，并且可以尝试降低一下音频的比特率。有时候44.1khz的采样是没有必要的，稍微低一点的比特率也不会降低音频的质量。
+
+****************************
+iOS App Store相关因素
+作为提交到App Store中app里的可执行文件是被加过密的。加密的副作用是可执行文件的压缩效果没有之前的好了，因为加密会隐藏一些细节问题。因此，从App Store下载下来的.ipa文件大小要比从本地build出来的.ipa文件大。
+注意：将长文本内容和表数据等从代码中移除，并添加到外部文件中，这样可以减小最终安装包下载的大小——因为这些文件的压缩效果更好。
+如果你选择Organizer window中的某个archived，然后点击Estimate Size，Xcode可以对最终分发的程序尺寸做出一个评估。这里并不考虑Mac App Store上面的和企业级部署的iOS程序。
+
+****************************
+（1）Strip Link Product设成YES，可执行文件减少 
+（2）Make Strings Read-Only设为YES后可执行文件减少 
+（3）去掉异常支持，Enable C++ Exceptions和Enable Objective-C Exceptions设为NO，并且Other C Flags添加-fno-exceptions，可执行文件减少了27M，其中__gcc_except_tab段减少了17.3M，__text减少了9.7M，效果特别明显。可以对某些文件单独支持异常，编译选项加上-fexceptions即可。但有个问题，假如ABC三个文件，AC文件支持了异常，B不支持，如果C抛了异常，在模拟器下A还是能捕获异常不至于Crash，但真机下捕获不了（有知道原因可以在下面留言：）。去掉异常后，Appstore后续几个版本Crash率没有明显上升。个人认为关键路径支持异常处理就好，像启动时NSCoder读取setting配置文件得要支持捕获异常，等等
+
+****************************
+将build setting中的Optimization Level设置为Fastest, Smallest [-Os]; 将build setting 中的Strip Debug Symbols During Copy设置为YES(COPY_PHASE_STRIP = YES)，这样可以减小编译出二进制文件的尺寸。这里提到的这些设置在Xcode工程中对于Release的配置是默认的。
+警告：这些设置会让你的程序很难debug。在一般开发环境build中不建议这样设置，
